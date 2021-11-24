@@ -14,7 +14,7 @@
 # limitations under the License.
 #
 import flask
-from flask import Flask, request
+from flask import Flask, request, redirect
 from flask_sockets import Sockets
 import gevent
 from gevent import queue
@@ -59,21 +59,64 @@ class World:
     def world(self):
         return self.space
 
+'''
+Implementation of the Client class was obtained from the course examples on websockets
+in the course repository at:
+https://github.com/uofa-cmput404/cmput404-slides/blob/master/examples/WebSocketsExamples/chat.py
+
+Copyright 2013 Abram Hindle
+
+Last Accessed: November 23, 2021
+'''
+class Client:
+    
+    def __init__(self):
+        self.queue = queue.Queue()
+
+    def put(self, v):
+        self.queue.put_nowait(v)
+
+    def get(self):
+        return self.queue.get()
+
 myWorld = World()        
+clients = []
 
 def set_listener( entity, data ):
     ''' do something with the update ! '''
+    msg = json.dumps({ entity: data })
+    for client in clients:
+        client.put(msg)
 
 myWorld.add_set_listener( set_listener )
         
 @app.route('/')
 def hello():
     '''Return something coherent here.. perhaps redirect to /static/index.html '''
-    return None
+    return redirect('static/index.html')
 
 def read_ws(ws,client):
     '''A greenlet function that reads from the websocket and updates the world'''
     # XXX: TODO IMPLEMENT ME
+    try:
+        while True:
+            msg = ws.receive()
+            print(f"Received {msg}")
+
+            if msg:
+                data = json.loads(msg)
+                entity = list(data.keys())
+                if len(entity) != 1:
+                    continue
+
+                myWorld.set(entity)
+            
+            else:
+                break
+
+    except:
+        pass
+
     return None
 
 @sockets.route('/subscribe')
@@ -81,6 +124,24 @@ def subscribe_socket(ws):
     '''Fufill the websocket URL of /subscribe, every update notify the
        websocket and read updates from the websocket '''
     # XXX: TODO IMPLEMENT ME
+    client = Client()
+    clients.append(client)
+    g = gevent.spawn(read_ws, ws, client)
+    try:
+        while True:
+            print("Blocked in subscribe")
+            msg = client.get()
+
+            print(f"Sending {msg}")
+            ws.send(msg)
+    
+    except Exception as e:
+        print(f"WebSocket Error: {e}")
+
+    finally:
+        clients.remove(client)
+        gevent.kill(g)
+
     return None
 
 
