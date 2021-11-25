@@ -37,6 +37,9 @@ window.onload = function() {
     var wscounter = 0;
     var socket;
 
+    var img = document.createElement('img');
+    img.src = './IMG_6706.jpg'
+
     function debug(str) {
         var debugDiv = document.getElementById('debug');
         debugDiv.innerHTML = "" + str;
@@ -100,11 +103,13 @@ window.onload = function() {
 
     function clearFrame() {
         with(context) {
-        moveTo(0,0);
-        fillStyle = "#000";
-        fillRect(0,0,W,H);
+            moveTo(0,0);
+            fillStyle = "#000";
+            fillRect(0,0,W,H);
+            fillStyle = createPattern(img, 'no-repeat');
+            //fillStyle = "#000";
+            fillRect(0,0,W,H);
         }
-
     }
 
     // This actually draws the frame
