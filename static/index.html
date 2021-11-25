@@ -46,16 +46,46 @@ window.onload = function() {
     world = {};
 
     //XXX: TODO Make this prettier!
-    function drawCircle(context,entity) {
+    //Consulted examples and documentation from:
+    // MDN Web Docs, "Canvas API", by Mozilla contributors [1], CC-BY-SA 2.5
+    // MDN Web Docs, "Canvas Gradient", by Mozilla contributors [2], CC-BY-SA 2.5
+    // MDN Web Docs, "Drawing shapes with canvas", by Mozilla contributors [3], CC-BY-SA 2.5
+    // Mozilla Contributors:
+    //  [1] https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Drawing_shapes/contributors.txt
+    //  [2] https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/contributors.txt
+    //  [3] https://developer.mozilla.org/en-US/docs/Web/API/CanvasGradient/contributors.txt
+    // Accessed November 3, 2021
+    function drawEntity(context,entity) {
         with(context) {
-            beginPath();                
+            beginPath();              
             lineWidth = 3;
             var x = entity["x"];
             var y = entity["y"];
+            var size = (entity["size"])?entity["size"]:50
             //moveTo(x,y);
-            fillStyle = entity["colour"];
+            var gradient = createLinearGradient(x, y, x+100, y+100);
+            gradient.addColorStop(0, entity["colour"]);
+            if ("colour2" in entity) {
+                gradient.addColorStop(1, entity["colour2"]);
+            }
+            fillStyle = gradient;
+
+            if (entity["shape"] === "square") {
+                fillRect(x, y, size, size);
+            } else if (entity["shape"] === "triangle") {
+                moveTo(x, y);
+                lineTo(x - size/2, y + size);
+                lineTo(x + size/2, y + size);
+                closePath();
+            }
+            else {
+                arc(x, y, size, 0, 2.0 * Math.PI, false);  
+            }
+            
+            context.shadowBlur = 10;
+            context.shadowColor = entity["colour"];
+            fill();
             strokeStyle = fillStyle;
-            arc(x, y, (entity["radius"])?entity["radius"]:50, 0, 2.0 * Math.PI, false);  
             stroke();                                
         }
     }
@@ -84,7 +114,7 @@ window.onload = function() {
         clearFrame();
         for (var key in world) {
             var entity = world[key];
-            drawCircle(context,prepEntity(entity));
+            drawEntity(context,prepEntity(entity));
         }
     }
 
@@ -235,16 +265,24 @@ window.onload = function() {
     // Add the application specific mouse listeners!
     //XXX: TODO Make these prettier!
     mouse.mousedowners.push(function(x,y,clicked,e) {
-        addEntityWithoutName({'x':x,'y':y,'colour':'blue'});
+        //addEntityWithoutName({'x':x,'y':y,'colour':'blue'});
+        //addEntityWithoutName({'x':x, 'y':y, 'colour': 'cyan', 'colour2': 'red', 'shape': 'square'})
+        addEntityWithoutName({'x':x, 'y':y, 'colour':'cyan', 'size': 70,
+                                'colour2': 'red', 'shape': 'triangle'});
     });
 
     mouse.mouseuppers.push(function(x,y,clicked,e) {
-        addEntityWithoutName({'x':x,'y':y,'colour':'red'});
+        //addEntityWithoutName({'x':x, 'y':y, 'colour': 'purple', 'colour2': 'white', 'shape': 'square'});
+        addEntityWithoutName({'x':x, 'y':y, 'colour':'purple', 'size': 70,
+                                'colour2': 'white', 'shape': 'triangle'});
     });
 
     mouse.mousedraggers.push(function(x,y,clicked,e) {
-        addEntityWithoutName({'x':x,'y':y,'colour':'green',
-                            'radius':10});
+        //addEntityWithoutName({'x':x,'y':y,'colour':'green',
+        //                      'size':10, 'shape': 'circle'});
+        //addEntityWithoutName({'x':x, 'y':y, 'colour':'yellow', 'size': 70,
+        //                        'colour2': 'blue', 'shape': 'triangle'});
+        addEntityWithoutName({'x':x, 'y':y, 'colour': 'yellow', 'colour2': 'blue', 'shape': 'square'})
     });
 
 
