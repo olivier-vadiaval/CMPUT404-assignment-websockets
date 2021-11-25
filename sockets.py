@@ -72,6 +72,9 @@ class Client:
     
     def __init__(self):
         self.queue = queue.Queue()
+        for entity, data in myWorld.world().items():
+            msg = json.dumps({ entity: data })
+            self.put(msg)
 
     def put(self, v):
         self.queue.put_nowait(v)
@@ -109,10 +112,11 @@ def read_ws(ws,client):
                 if len(entity) != 1:
                     continue
 
-                myWorld.set(entity)
-            
-            else:
-                break
+                entity = entity[0]
+
+                print(f"entity: {entity}")
+
+                myWorld.set(entity, data[entity])
 
     except:
         pass
