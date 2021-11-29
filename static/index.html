@@ -49,15 +49,13 @@ window.onload = function() {
     world = {};
 
     //XXX: TODO Make this prettier!
-    //Consulted examples and documentation from:
-    // MDN Web Docs, "Canvas API", by Mozilla contributors [1], CC-BY-SA 2.5
-    // MDN Web Docs, "Canvas Gradient", by Mozilla contributors [2], CC-BY-SA 2.5
-    // MDN Web Docs, "Drawing shapes with canvas", by Mozilla contributors [3], CC-BY-SA 2.5
-    // Mozilla Contributors:
-    //  [1] https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Drawing_shapes/contributors.txt
-    //  [2] https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/contributors.txt
-    //  [3] https://developer.mozilla.org/en-US/docs/Web/API/CanvasGradient/contributors.txt
-    // Accessed November 3, 2021
+    // The following function is derived from my assignment 4 submission, accessible at
+    // https://github.com/olivier-vadiaval/CMPUT404-assignment-ajax, and which is LICENSE'D
+    // under the Apache 2 license
+    //
+    // Last Accessed: November 26, 2021
+    // Copyright (c) 2014-2021 Abram Hindle, Olivier Vadiavaloo
+    //
     function drawEntity(context,entity) {
         with(context) {
             beginPath();              
@@ -101,6 +99,13 @@ window.onload = function() {
         return entity;
     }
 
+    // The following function is derived from my assignment 4 submission, accessible at
+    // https://github.com/olivier-vadiaval/CMPUT404-assignment-ajax, and which is LICENSE'D
+    // under the Apache 2 license
+    //
+    // Last Accessed: November 26, 2021
+    // Copyright (c) 2014-2021 Abram Hindle, Olivier Vadiavaloo
+    //
     function clearFrame() {
         with(context) {
             moveTo(0,0);
@@ -265,6 +270,13 @@ window.onload = function() {
         return self;
     })();
 
+    // The following code snippet is derived from my assignment 4 submission, accessible at
+    // https://github.com/olivier-vadiaval/CMPUT404-assignment-ajax, and which is LICENSE'D
+    // under the Apache 2 license
+    //
+    // Last Accessed: November 26, 2021
+    // Copyright (c) 2014-2021 Abram Hindle, Olivier Vadiavaloo
+    //
     // Add the application specific mouse listeners!
     //XXX: TODO Make these prettier!
     mouse.mousedowners.push(function(x,y,clicked,e) {
